@@ -1,6 +1,7 @@
 ## Build Vercel System
 
-To Read: `https://vercel.com/blog/behind-the-scenes-of-vercels-infrastructure`
+To Read: `https://vercel.com/blog/behind-the-scenes-of-vercels-infrastructure <br>
+Redis Queue: `https://redis.io/topics/streams`
 
 Three steps to building Vercel:
 
@@ -20,3 +21,6 @@ They heavily rely on AWS constructs.
 
 create bucket on S3 Amazon or R2 Cloudflare
 function to upload a file to S3 given an input path
+
+Deployment service:
+Need to create infinitely running for loop to pull values from redis queue
