@@ -5,6 +5,9 @@ import { buildProject } from "./utils";
 const subscriber = createClient();
 subscriber.connect(); //localhost:6379
 
+const publisher = createClient();
+publisher.connect();
+
 async function main() {
     while(1){
         const response = await subscriber.brPop(
@@ -17,9 +20,24 @@ async function main() {
         //but ts shows string
         //@ts-ignore
         const id = response.element;
-        await downloadFromS3(`output/${id}/`);
-        await buildProject(id);
-        await copyFinalDist(id);
+        try {
+            await downloadFromS3(`output/${id}/`);
+            console.log(`Downloaded project ${id} successfully.`);
+
+            await buildProject(id);
+            console.log(`Built project ${id} successfully.`);
+
+            await copyFinalDist(id);
+            console.log(`Copied final dist for project ${id} successfully.`);
+
+            // Set status of id in database
+            await publisher.hSet("status", id, "deployed");
+            console.log(`Project ${id} status set to deployed.`);
+        } catch (error) {
+            console.error(`Error processing ${id}:`, error);
+            // Optionally, set a failure status in the database
+            await publisher.hSet("status", id, "failed");
+        }
     }
     //build processing logic
 

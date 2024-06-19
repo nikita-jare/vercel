@@ -8,7 +8,7 @@ const s3 = new S3({
 });
 
 export async function downloadFromS3 (prefix: string) {
-
+    console.log(`Downloading project ${prefix} from S3...`);
     const params = {
         Bucket: "vercel.bt",
         Prefix: prefix
@@ -38,9 +38,11 @@ export async function downloadFromS3 (prefix: string) {
         })       
     }) || [];
     await Promise.all(allPromises?.filter(x => x !== undefined));
+
 }
 
 export function copyFinalDist(id: string) {
+    console.log(`Copying final dist for project ${id}...`);
     const folderPath = path.join(__dirname, `output/${id}/dist`);
     const allFiles = getAllFiles(folderPath);
     allFiles.forEach(file => {

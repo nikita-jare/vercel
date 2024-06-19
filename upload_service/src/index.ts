@@ -11,6 +11,9 @@ import {createClient} from "redis";
 const publisher = createClient();
 publisher.connect();
 
+const subscriber = createClient();
+subscriber.connect();
+
 const app = express();
 app.use(cors());
 
@@ -28,15 +31,27 @@ app.post("/deploy", async (req, res) => {
     //retrieve paths to all files in output/id
     const files = getAllFiles(path.join(__dirname + `/output/${id}`));
 
-    //iterate all over all files and upload them to S3
-    files.forEach(async (file) => {
+   // iterate over all files and upload them to S3
+   const uploadPromises = files.map(async (file) => {
         await uploadToS3(file.slice(__dirname.length + 1), file);
-    })
+    });
+
+    // wait for all files to be uploaded
+    await Promise.all(uploadPromises);
 
     //put the id in Redis (vercel uses SQS)
     //ToDO: use SQS API
     await publisher.lPush("build-queue", id);
+
+    //set status of id in database
+    publisher.hSet("status", id, "uploaded");
     res.json({ id: id });
 });
+
+app.get("/status", async (req, res) => {
+    const id = req.query.id;
+    const status = await subscriber.hGet("status", id as string);
+    res.json({ status: status });   
+})
 
 app.listen(3000, () => console.log("Server started on port 3000"));

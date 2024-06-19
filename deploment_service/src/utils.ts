@@ -2,6 +2,8 @@ import { exec } from "child_process"
 import path from "path"
 
 export function buildProject(id: string) {
+    console.log(`Building project ${id}...`);
+
     return new Promise((resolve, reject) => {
         const child = exec(`cd ${path.join(__dirname, `/output/${id}`)} && npm install && npm run build`)
         
@@ -18,4 +20,6 @@ export function buildProject(id: string) {
         });
     
     })
+    console.log(`Built project ${id} successfully.`);
+
 }
