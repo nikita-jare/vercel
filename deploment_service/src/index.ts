@@ -39,8 +39,6 @@ async function main() {
             await publisher.hSet("status", id, "failed");
         }
     }
-    //build processing logic
-
 }   
 
 main();
