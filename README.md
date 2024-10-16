@@ -1,6 +1,7 @@
 ## Build Vercel System
 
-To Read: `https://vercel.com/blog/behind-the-scenes-of-vercels-infrastructure <br>
+To Read: `https://vercel.com/blog/behind-the-scenes-of-vercels-infrastructure
+
 Redis Queue: `https://redis.io/topics/streams`
 
 Three steps to building Vercel:
@@ -13,11 +14,6 @@ They heavily rely on AWS constructs.
 
 - High level System Design of Vercel
 - simple-git: npm module to clone git repos. Its very light weight and gives a slightly cleaner API than git.
-
-  Steps to code:
-
-1. Initialise empty TypeScript project
-2.
 
 create bucket on S3 Amazon or R2 Cloudflare
 function to upload a file to S3 given an input path
